@@ -28,7 +28,7 @@ mineField = map.map(size)
 mineField.placeMines(mines)
 
 pygame.init()
-screen = pygame.display.set_mode((size * tileSize, size * tileSize)) # one cell is 32x32, the entire thing is 25*25 for now
+screen = pygame.display.set_mode((size * tileSize, size * tileSize))
 clock = pygame.time.Clock()
 
 while True:
@@ -41,6 +41,10 @@ while True:
     for i in range(size):
         for j in range(size):
             screen.blit(textures[mineField.map[i][j].texture],(j * tileSize, i * tileSize))
+
+    mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
+
+    
 
     pygame.display.flip()
     clock.tick(60)

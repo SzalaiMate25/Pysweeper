@@ -11,3 +11,4 @@ class tile:
 class presets:
     empty = tile(False,False,9,False)
     mine = tile(True,False,9,False)
+    flagged = tile(False,False,10,True)
