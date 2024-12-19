@@ -1,5 +1,7 @@
 import pygame
 import sys
+import tile
+import map
 
 pygame.init()
 screen = pygame.display.set_mode((800,800)) # one cell is 32x32, the entire thing is 25*25 for now
