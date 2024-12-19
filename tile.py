@@ -1,9 +1,13 @@
-class Tile:
-    def __init__(self):
-        self.isMine = False
-        self.isShown = False
-        self.texture = 0
-        self.isFlagged = False
+class tile:
+    def __init__(self,isMine,isShown,defaultTexture,isFlagged):
+        self.isMine = isMine
+        self.isShown = isShown
+        self.texture = defaultTexture
+        self.isFlagged = isFlagged
 
     def changeTexture(self,to):
         self.texture = to
+
+class presets:
+    empty = tile(False,False,9,False)
+    mine = tile(True,False,9,False)
