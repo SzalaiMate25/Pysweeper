@@ -72,7 +72,16 @@ while True:
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 
-    
+    finished = True
+
+    for row in mineField.map:
+        for cell in row:
+            if cell.texture == 9 or cell.isMine != cell.isFlagged:
+                finished = False
+    if finished:
+        print("You win!")
+        sys.exit()
+        
 
     pygame.display.flip()
     clock.tick(60)
