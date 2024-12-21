@@ -2,9 +2,10 @@ import pygame
 import sys
 import tile
 import map
+import time
 from copy import deepcopy as copy
 
-size = 15
+size = 5
 tileSize = 64
 mines = int((size ** 2) / 5)
 
@@ -35,6 +36,11 @@ mineField.placeMines(mines)
 
 rects = [[pygame.Rect((i * tileSize, j * tileSize),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
 
+pygame.mixer.init()
+
+yay = pygame.mixer.Sound("audio/yay.mp3") # https://pixabay.com/sound-effects/search/yay/
+boom = pygame.mixer.Sound("audio/boom.mp3") # https://pixabay.com/sound-effects/search/explosion/
+
 preivousKeyPresses = (False,False,False)
 firstRevealed = False
 
@@ -43,7 +49,19 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
     
-    screen.fill("brown")
+        finished = True
+
+    for row in mineField.map:
+        for cell in row:
+            if cell.texture == 9 or cell.isMine != cell.isFlagged:
+                finished = False
+    if finished:
+        pygame.mixer.Sound.play(yay)
+        time.sleep(3)
+        print("You win!")
+        sys.exit()
+
+    screen.fill("green")
 
     for i in range(size):
         for j in range(size):
@@ -74,6 +92,8 @@ while True:
                                 break
 
                     if mineField.map[j][i].isMine:
+                        pygame.mixer.Sound.play(boom)
+                        time.sleep(3)
                         print("BOOOM")
                         sys.exit()
 
@@ -81,17 +101,6 @@ while True:
                         mineField.clear((j,i))
 
     preivousKeyPresses = pygame.mouse.get_pressed()
-
-    finished = True
-
-    for row in mineField.map:
-        for cell in row:
-            if cell.texture == 9 or cell.isMine != cell.isFlagged:
-                finished = False
-    if finished:
-        print("You win!")
-        sys.exit()
-        
 
     pygame.display.flip()
     clock.tick(60)
