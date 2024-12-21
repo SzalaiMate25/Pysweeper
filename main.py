@@ -4,10 +4,51 @@ import tile
 import map
 import time
 from copy import deepcopy as copy
+import os
+
+os.system('cls' if os.name == 'nt' else 'clear')
+
+sizes = (8,16,25)
+tileSizes = (96,48,32)
 
 size = 5
 tileSize = 64
-mines = int((size ** 2) / 5)
+
+while True:
+    try:
+        difficulty = int(input("Enter difficulty (1-3): "))
+        if difficulty == -1:
+            break
+        if difficulty == 0:
+            try:
+                size = int(input("Enter custom size: "))
+                if size < 1:
+                    print("Size cannot be less than 1")
+                else:
+                    if size < 10:
+                        tileSize = 96
+                    elif size < 20:
+                        tileSize = 48
+                    elif size < 32:
+                        tileSize = 32
+                    else:
+                        tileSize = 24
+                    break
+            except:
+                print("Invalid input")
+        if difficulty in (1,2,3):
+            size = sizes[difficulty - 1]
+            tileSize = tileSizes[difficulty - 1]
+            break
+        else: 
+            print("Difficulty not in range")
+    except:
+        print("Invalid input")
+
+if difficulty == -1:
+    sys.exit()
+
+mines = int((size ** 2) / 5) + 1
 
 textures = [
     pygame.image.load("textures/cell0.png"),
@@ -23,6 +64,7 @@ textures = [
     pygame.image.load("textures/celldown.png"),
     pygame.image.load("textures/cellmine.png"),
     pygame.image.load("textures/exploded.png"),
+    pygame.image.load("textures/falseflagged.png"),
             ]
 
 for i in range(len(textures)):
@@ -58,7 +100,7 @@ while True:
         for cell in row:
             if cell.texture == 9 or cell.isMine != cell.isFlagged:
                 finished = False
-                
+
     if finished:
         pygame.mixer.Sound.play(yay)
         time.sleep(3)
@@ -103,6 +145,8 @@ while True:
                             for l in range(size):
                                 if mineField.map[k][l].isMine:
                                     mineField.map[k][l].texture = 11
+                                elif mineField.map[k][l].texture == 10:
+                                    mineField.map[k][l].texture = 13
 
                         mineField.map[j][i].texture = 12
 
