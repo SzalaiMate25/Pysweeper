@@ -24,12 +24,17 @@ textures = [
 for i in range(len(textures)):
     textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
     
-mineField = map.map(size)
-mineField.placeMines(mines)
 
 pygame.init()
 screen = pygame.display.set_mode((size * tileSize, size * tileSize))
 clock = pygame.time.Clock()
+
+mineField = map.map(size)
+mineField.placeMines(mines)
+
+rects = [[pygame.Rect((i * tileSize, j * tileSize),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
+
+preivousKeyPresses = (False,False,False)
 
 while True:
     for event in pygame.event.get():
@@ -43,6 +48,24 @@ while True:
             screen.blit(textures[mineField.map[i][j].texture],(j * tileSize, i * tileSize))
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
+
+    for i in range(size):
+        for j in range(size):
+            if rects[i][j].collidepoint(pygame.mouse.get_pos()):
+                if mouseKeyPresses[2] and not preivousKeyPresses[2]:
+                    if mineField.map[j][i].isFlagged:
+                        mineField.map[j][i].texture = 9
+                        mineField.map[j][i].isFlagged = False
+                    else:
+                        mineField.map[j][i].texture = 10
+                        mineField.map[j][i].isFlagged = True
+                elif mouseKeyPresses[0] and not preivousKeyPresses[0]:
+                    if mineField.map[j][i].isMine:
+                        sys.exit()
+                    else:
+                        mineField.map[j][i].texture = mineField.getAdjacent((j,i))
+
+    preivousKeyPresses = pygame.mouse.get_pressed()
 
     
 
