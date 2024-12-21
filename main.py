@@ -4,8 +4,8 @@ import tile
 import map
 from copy import deepcopy as copy
 
-size = 25
-tileSize = 40
+size = 15
+tileSize = 64
 mines = int((size ** 2) / 5)
 
 textures = [
@@ -36,6 +36,7 @@ mineField.placeMines(mines)
 rects = [[pygame.Rect((i * tileSize, j * tileSize),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
 
 preivousKeyPresses = (False,False,False)
+firstRevealed = False
 
 while True:
     for event in pygame.event.get():
@@ -63,6 +64,15 @@ while True:
                         mineField.map[j][i].isFlagged = True
 
                 elif mouseKeyPresses[0] and not preivousKeyPresses[0]:
+                    if not firstRevealed:
+                        while True:
+                            if mineField.getAdjacent((j,i)) != 0:
+                                mineField = map.map(size)
+                                mineField.placeMines(mines)
+                            else:
+                                firstRevealed = True
+                                break
+
                     if mineField.map[j][i].isMine:
                         print("BOOOM")
                         sys.exit()
