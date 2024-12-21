@@ -42,5 +42,4 @@ class map:
 
                             if self.map[coords[0] + j][coords[1] + i].texture == 0:
                                 self.clear((coords[0] + j,coords[1] + i))
-
                     except: pass
