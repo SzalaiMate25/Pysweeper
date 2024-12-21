@@ -2,6 +2,7 @@ import pygame
 import sys
 import tile
 import map
+from copy import deepcopy as copy
 
 size = 25
 tileSize = 40
@@ -56,14 +57,18 @@ while True:
                     if mineField.map[j][i].isFlagged:
                         mineField.map[j][i].texture = 9
                         mineField.map[j][i].isFlagged = False
+
                     else:
                         mineField.map[j][i].texture = 10
                         mineField.map[j][i].isFlagged = True
+
                 elif mouseKeyPresses[0] and not preivousKeyPresses[0]:
                     if mineField.map[j][i].isMine:
+                        print("BOOOM")
                         sys.exit()
+
                     else:
-                        mineField.map[j][i].texture = mineField.getAdjacent((j,i))
+                        mineField.clear((j,i))
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 

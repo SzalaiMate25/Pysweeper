@@ -4,6 +4,7 @@ class tile:
         self.isShown = isShown
         self.texture = defaultTexture
         self.isFlagged = isFlagged
+        self.isShown = False
 
 class presets:
     empty = tile(False,False,9,False)
