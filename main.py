@@ -21,6 +21,8 @@ textures = [
     pygame.image.load("textures/cell8.png"),
     pygame.image.load("textures/cellup.png"),
     pygame.image.load("textures/celldown.png"),
+    pygame.image.load("textures/cellmine.png"),
+    pygame.image.load("textures/exploded.png"),
             ]
 
 for i in range(len(textures)):
@@ -43,6 +45,7 @@ boom = pygame.mixer.Sound("audio/boom.mp3") # https://pixabay.com/sound-effects/
 
 preivousKeyPresses = (False,False,False)
 firstRevealed = False
+exploded = False
 
 while True:
     for event in pygame.event.get():
@@ -55,24 +58,25 @@ while True:
         for cell in row:
             if cell.texture == 9 or cell.isMine != cell.isFlagged:
                 finished = False
+                
     if finished:
         pygame.mixer.Sound.play(yay)
         time.sleep(3)
         print("You win!")
         sys.exit()
 
-    screen.fill("green")
-
-    for i in range(size):
-        for j in range(size):
-            screen.blit(textures[mineField.map[i][j].texture],(j * tileSize, i * tileSize))
+    if exploded:
+        pygame.mixer.Sound.play(boom)
+        time.sleep(3)
+        print("BOOOM")
+        sys.exit()
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
 
     for i in range(size):
         for j in range(size):
             if rects[i][j].collidepoint(pygame.mouse.get_pos()):
-                if mouseKeyPresses[2] and not preivousKeyPresses[2]:
+                if mouseKeyPresses[2] and not preivousKeyPresses[2] and mineField.map[j][i].texture in (9,10):
                     if mineField.map[j][i].isFlagged:
                         mineField.map[j][i].texture = 9
                         mineField.map[j][i].isFlagged = False
@@ -87,20 +91,31 @@ while True:
                             if mineField.getAdjacent((j,i)) != 0:
                                 mineField = map.map(size)
                                 mineField.placeMines(mines)
+
                             else:
                                 firstRevealed = True
                                 break
 
                     if mineField.map[j][i].isMine:
-                        pygame.mixer.Sound.play(boom)
-                        time.sleep(3)
-                        print("BOOOM")
-                        sys.exit()
+                        exploded = True
+
+                        for k in range(size):
+                            for l in range(size):
+                                if mineField.map[k][l].isMine:
+                                    mineField.map[k][l].texture = 11
+
+                        mineField.map[j][i].texture = 12
 
                     else:
                         mineField.clear((j,i))
 
     preivousKeyPresses = pygame.mouse.get_pressed()
+
+    screen.fill("green")
+
+    for i in range(size):
+        for j in range(size):
+            screen.blit(textures[mineField.map[i][j].texture],(j * tileSize, i * tileSize))
 
     pygame.display.flip()
     clock.tick(60)
