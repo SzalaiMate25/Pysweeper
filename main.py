@@ -33,6 +33,7 @@ def restart(difficulty):
     global screen
     global rects
     global textures
+    global exploded
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -43,6 +44,7 @@ def restart(difficulty):
     mines = int((size ** 2) / 5) + 1
 
     firstRevealed = False
+    exploded = False
 
     mineField = map.map(size)
     mineField.placeMines(mines)
@@ -166,7 +168,7 @@ while True:
     if exploded:
         pygame.mixer.Sound.play(boom)
         time.sleep(3)
-        print("BOOOM")
+        print("BOOOM\n")
         restart(difficulty)
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
