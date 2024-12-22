@@ -20,9 +20,58 @@ def explode():
             elif mineField.map[j][i].texture == 10:
                 mineField.map[j][i].texture = 13
 
+def restart(difficulty):
+    global sizes
+    global size
+    global mines
+    global width
+    global height
+    global mineField
+    global firstRevealed
+    global screen
+    global rects
+    global textures
+
+    size = sizes[difficulty]
+    tileSize = tileSizes[difficulty]
+
+    width = size * tileSize + sizeOffset_x
+    height = size * tileSize + sizeOffset_y
+
+    mines = int((size ** 2) / 5) + 1
+
+    firstRevealed = False
+
+    mineField = map.map(size)
+    mineField.placeMines(mines)
+
+    textures = [
+        pygame.image.load("textures/cell0.png"),
+        pygame.image.load("textures/cell1.png"),
+        pygame.image.load("textures/cell2.png"),
+        pygame.image.load("textures/cell3.png"),
+        pygame.image.load("textures/cell4.png"),
+        pygame.image.load("textures/cell5.png"),
+        pygame.image.load("textures/cell6.png"),
+        pygame.image.load("textures/cell7.png"),
+        pygame.image.load("textures/cell8.png"),
+        pygame.image.load("textures/cellup.png"),
+        pygame.image.load("textures/celldown.png"),
+        pygame.image.load("textures/cellmine.png"),
+        pygame.image.load("textures/exploded.png"),
+        pygame.image.load("textures/falseflagged.png"),
+            ]
+
+    for i in range(len(textures)):
+        textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
+
+    screen = pygame.display.set_mode((width, height))
+
+    rects = [[pygame.Rect((i * tileSize + offset_x, j * tileSize + offset_y),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
+
 os.system('cls' if os.name == 'nt' else 'clear')
 
-sizes = (8,16,25)
+sizes = (8,16,24)
 tileSizes = (96,48,32)
 
 size = 5
@@ -36,26 +85,9 @@ sizeOffset_x = 0
 while True:
     try:
         difficulty = int(input("Enter difficulty (1-3): "))
-        if difficulty == -1:
-            break
         if difficulty == 0:
-            try:
-                size = int(input("Enter custom size: "))
-                if size < 1:
-                    print("Size cannot be less than 1")
-                else:
-                    if size < 10:
-                        tileSize = 96
-                    elif size < 20:
-                        tileSize = 48
-                    elif size < 32:
-                        tileSize = 32
-                    else:
-                        tileSize = 24
-                    break
-            except:
-                print("Invalid input")
-        if difficulty in (1,2,3):
+            break
+        elif difficulty in (1,2,3):
             size = sizes[difficulty - 1]
             tileSize = tileSizes[difficulty - 1]
             break
@@ -115,7 +147,34 @@ preivousKeyPresses = (False,False,False)
 firstRevealed = False
 exploded = False
 
-font = pygame.font.Font('freesansbold.ttf', 64)
+minesLeftFont = pygame.font.Font('freesansbold.ttf', 64)
+diffcultyFont = pygame.font.Font('freesansbold.ttf', 16)
+
+button = pygame.image.load("textures/button.png")
+button = pygame.transform.scale(button, (96,48))
+
+easyText = diffcultyFont.render("Easy",True,"black")
+mediumText = diffcultyFont.render("Medium",True,"black")
+hardText = diffcultyFont.render("Hard",True,"black")
+
+easyRect = button.get_rect()
+mediumRect = button.get_rect()
+hardRect = button.get_rect()
+easyTextRect = easyText.get_rect()
+mediumTextRect = mediumText.get_rect()
+hardTextRect = hardText.get_rect()
+
+easyPos = (70,50)
+mediumPos = (176,50)
+hardPos = (282,50)
+
+easyRect.center = easyPos
+mediumRect.center = mediumPos
+hardRect.center = hardPos
+easyTextRect.center = easyPos
+mediumTextRect.center = mediumPos
+hardTextRect.center = hardPos
+ 
 
 while True:
     for event in pygame.event.get():
@@ -142,10 +201,11 @@ while True:
         sys.exit()
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
+    mousePos = pygame.mouse.get_pos()
 
     for i in range(size):
         for j in range(size):
-            if rects[i][j].collidepoint(pygame.mouse.get_pos()):
+            if rects[i][j].collidepoint(mousePos):
                 if mouseKeyPresses[2] and not preivousKeyPresses[2] and mineField.map[j][i].texture in (9,10):
                     if mineField.map[j][i].isFlagged:
                         mineField.map[j][i].texture = 9
@@ -185,15 +245,30 @@ while True:
                                             mineField.clear((j + l, i + k))
                                 except: pass
 
+    if mouseKeyPresses[0] and not preivousKeyPresses[0]:
+        if easyRect.collidepoint(mousePos):
+            restart(0)
+        if mediumRect.collidepoint(mousePos):
+            restart(1)
+        if hardRect.collidepoint(mousePos):
+            restart(2)
+
     preivousKeyPresses = pygame.mouse.get_pressed()
 
     screen.fill(backgroundColor)
 
-    minesLeft = font.render(str(mineField.minesLeft()),True,"black")
+    minesLeft = minesLeftFont.render(str(mineField.minesLeft()),True,"black")
     minesLeftRect = minesLeft.get_rect()
     minesLeftRect.center = (width / 2, 50)
 
     screen.blit(minesLeft, minesLeftRect)
+
+    screen.blit(button, easyRect)
+    screen.blit(easyText, easyTextRect)
+    screen.blit(button, mediumRect)
+    screen.blit(mediumText, mediumTextRect)
+    screen.blit(button, hardRect)
+    screen.blit(hardText, hardTextRect)
 
     for i in range(size):
         for j in range(size):
