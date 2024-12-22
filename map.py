@@ -43,3 +43,10 @@ class map:
                             if self.map[coords[0] + j][coords[1] + i].texture == 0:
                                 self.clear((coords[0] + j,coords[1] + i))
                     except: pass
+
+    def minesLeft(self):
+        mines = 0
+        for row in self.map:
+            for cell in row:
+                mines += cell.isMine - cell.isFlagged
+        return mines

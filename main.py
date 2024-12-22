@@ -28,10 +28,10 @@ tileSizes = (96,48,32)
 size = 5
 tileSize = 64
 
-offset_y = 50
-offset_x = 300
-sizeOffset_y = 50
-sizeOffset_x = 600
+offset_y = 100
+offset_x = 0
+sizeOffset_y = 100
+sizeOffset_x = 0
 
 while True:
     try:
@@ -92,7 +92,13 @@ for i in range(len(textures)):
 backgroundColor = pygame.Color(35,173,79)
 
 pygame.init()
-screen = pygame.display.set_mode((size * tileSize + sizeOffset_x, size * tileSize + sizeOffset_y))
+
+pygame.display.set_caption('Pysweeper')
+
+width = size * tileSize + sizeOffset_x
+height = size * tileSize + sizeOffset_y
+
+screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
 mineField = map.map(size)
@@ -108,6 +114,8 @@ boom = pygame.mixer.Sound("audio/boom.mp3") # https://pixabay.com/sound-effects/
 preivousKeyPresses = (False,False,False)
 firstRevealed = False
 exploded = False
+
+font = pygame.font.Font('freesansbold.ttf', 64)
 
 while True:
     for event in pygame.event.get():
@@ -180,6 +188,12 @@ while True:
     preivousKeyPresses = pygame.mouse.get_pressed()
 
     screen.fill(backgroundColor)
+
+    minesLeft = font.render(str(mineField.minesLeft()),True,"black")
+    minesLeftRect = minesLeft.get_rect()
+    minesLeftRect.center = (width / 2, 50)
+
+    screen.blit(minesLeft, minesLeftRect)
 
     for i in range(size):
         for j in range(size):
