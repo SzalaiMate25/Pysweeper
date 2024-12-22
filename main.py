@@ -65,9 +65,9 @@ offset_x = 0
 sizeOffset_y = 100
 sizeOffset_x = 0
 
-
-size = sizes[1]
-tileSize = tileSizes[1]
+difficulty = 1
+size = sizes[difficulty]
+tileSize = tileSizes[difficulty]
 
 
 mines = int((size ** 2) / 5) + 1
@@ -151,9 +151,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    
-        finished = True
-
+        
     for row in mineField.map:
         for cell in row:
             if cell.texture == 9 or cell.isMine != cell.isFlagged:
@@ -169,7 +167,7 @@ while True:
         pygame.mixer.Sound.play(boom)
         time.sleep(3)
         print("BOOOM")
-        sys.exit()
+        restart(difficulty)
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
     mousePos = pygame.mouse.get_pos()
@@ -195,9 +193,10 @@ while True:
 
                             else:
                                 firstRevealed = True
+                                mineField.clear((j,i))
                                 break
 
-                    if mineField.map[j][i].isMine:
+                    elif mineField.map[j][i].isMine:
                         explode()
 
                         mineField.map[j][i].texture = 12
@@ -218,11 +217,14 @@ while True:
 
     if mouseKeyPresses[0] and not preivousKeyPresses[0]:
         if easyRect.collidepoint(mousePos):
-            restart(0)
+            difficulty = 0
+            restart(difficulty)
         if mediumRect.collidepoint(mousePos):
-            restart(1)
+            difficulty = 1
+            restart(difficulty)
         if hardRect.collidepoint(mousePos):
-            restart(2)
+            difficulty = 2
+            restart(difficulty)
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 
