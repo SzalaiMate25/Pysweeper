@@ -23,6 +23,8 @@ def explode():
 def restart(difficulty):
     global sizes
     global size
+    global tileSizes
+    global tileSize
     global mines
     global width
     global height
@@ -61,14 +63,12 @@ def restart(difficulty):
         pygame.image.load("textures/exploded.png"),
         pygame.image.load("textures/falseflagged.png"),
             ]
-
+    
     for i in range(len(textures)):
         textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
 
-    screen = pygame.display.set_mode((width, height))
-
     rects = [[pygame.Rect((i * tileSize + offset_x, j * tileSize + offset_y),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
-
+    
 os.system('cls' if os.name == 'nt' else 'clear')
 
 sizes = (8,16,24)
