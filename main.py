@@ -13,12 +13,12 @@ def explode():
 
     exploded = True
 
-    for k in range(size):
-        for l in range(size):
-            if mineField.map[k][l].isMine:
-                mineField.map[k][l].texture = 11
-            elif mineField.map[k][l].texture == 10:
-                mineField.map[k][l].texture = 13
+    for i in range(size):
+        for j in range(size):
+            if mineField.map[j][i].isMine:
+                mineField.map[j][i].texture = 11
+            elif mineField.map[j][i].texture == 10:
+                mineField.map[j][i].texture = 13
 
 os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -27,6 +27,11 @@ tileSizes = (96,48,32)
 
 size = 5
 tileSize = 64
+
+offset_y = 50
+offset_x = 300
+sizeOffset_y = 50
+sizeOffset_x = 600
 
 while True:
     try:
@@ -83,16 +88,17 @@ textures = [
 
 for i in range(len(textures)):
     textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
-    
+
+backgroundColor = pygame.Color(35,173,79)
 
 pygame.init()
-screen = pygame.display.set_mode((size * tileSize, size * tileSize))
+screen = pygame.display.set_mode((size * tileSize + sizeOffset_x, size * tileSize + sizeOffset_y))
 clock = pygame.time.Clock()
 
 mineField = map.map(size)
 mineField.placeMines(mines)
 
-rects = [[pygame.Rect((i * tileSize, j * tileSize),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
+rects = [[pygame.Rect((i * tileSize + offset_x, j * tileSize + offset_y),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
 
 pygame.mixer.init()
 
@@ -162,19 +168,22 @@ while True:
                     else:
                         for k in range(-1,2):
                             for l in range(-1,2):
-                                if mineField.map[j + l][i + k].isMine:
-                                    if not mineField.map[j + l][i + k].isFlagged:
-                                        explode()
-                                else:
-                                    mineField.clear((j + l, i + k))
+                                try:
+                                    if j + l > -1 and i + k > -1:
+                                        if mineField.map[j + l][i + k].isMine:
+                                            if not mineField.map[j + l][i + k].isFlagged:
+                                                explode()
+                                        else:
+                                            mineField.clear((j + l, i + k))
+                                except: pass
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 
-    screen.fill("green")
+    screen.fill(backgroundColor)
 
     for i in range(size):
         for j in range(size):
-            screen.blit(textures[mineField.map[i][j].texture],(j * tileSize, i * tileSize))
+            screen.blit(textures[mineField.map[i][j].texture],(j * tileSize + offset_x, i * tileSize + offset_y))
 
     pygame.display.flip()
     clock.tick(60)
