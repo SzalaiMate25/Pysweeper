@@ -170,7 +170,9 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        
+    
+    finished = True
+
     for row in mineField.map:
         for cell in row:
             if cell.texture == 9 or cell.isMine != cell.isFlagged:
