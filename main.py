@@ -49,6 +49,23 @@ def restart(difficulty):
     mineField = map.map(size)
     mineField.placeMines(mines)
     
+    textures = [
+        pygame.image.load("textures/cell0.png"),
+        pygame.image.load("textures/cell1.png"),
+        pygame.image.load("textures/cell2.png"),
+        pygame.image.load("textures/cell3.png"),
+        pygame.image.load("textures/cell4.png"),
+        pygame.image.load("textures/cell5.png"),
+        pygame.image.load("textures/cell6.png"),
+        pygame.image.load("textures/cell7.png"),
+        pygame.image.load("textures/cell8.png"),
+        pygame.image.load("textures/cellup.png"),
+        pygame.image.load("textures/celldown.png"),
+        pygame.image.load("textures/cellmine.png"),
+        pygame.image.load("textures/exploded.png"),
+        pygame.image.load("textures/falseflagged.png"),
+            ]
+
     for i in range(len(textures)):
         textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
 
