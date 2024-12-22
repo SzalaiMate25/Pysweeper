@@ -6,6 +6,20 @@ import time
 from copy import deepcopy as copy
 import os
 
+def explode():
+    global exploded
+    global mineField
+    global size
+
+    exploded = True
+
+    for k in range(size):
+        for l in range(size):
+            if mineField.map[k][l].isMine:
+                mineField.map[k][l].texture = 11
+            elif mineField.map[k][l].texture == 10:
+                mineField.map[k][l].texture = 13
+
 os.system('cls' if os.name == 'nt' else 'clear')
 
 sizes = (8,16,25)
@@ -139,19 +153,20 @@ while True:
                                 break
 
                     if mineField.map[j][i].isMine:
-                        exploded = True
-
-                        for k in range(size):
-                            for l in range(size):
-                                if mineField.map[k][l].isMine:
-                                    mineField.map[k][l].texture = 11
-                                elif mineField.map[k][l].texture == 10:
-                                    mineField.map[k][l].texture = 13
+                        explode()
 
                         mineField.map[j][i].texture = 12
 
-                    else:
+                    elif mineField.map[j][i].texture in (9,10):
                         mineField.clear((j,i))
+                    else:
+                        for k in range(-1,2):
+                            for l in range(-1,2):
+                                if mineField.map[j + l][i + k].isMine:
+                                    if not mineField.map[j + l][i + k].isFlagged:
+                                        explode()
+                                else:
+                                    mineField.clear((j + l, i + k))
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 
