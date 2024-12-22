@@ -116,6 +116,7 @@ backgroundColor = pygame.Color(35,173,79)
 pygame.init()
 
 pygame.display.set_caption('Pysweeper')
+pygame.display.set_icon(pygame.image.load("textures/icon.png"))
 
 width = size * tileSize + sizeOffset_x
 height = size * tileSize + sizeOffset_y
