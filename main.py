@@ -135,13 +135,13 @@ firstRevealed = False
 exploded = False
 
 minesLeftFont = pygame.font.Font('freesansbold.ttf', 64)
-diffcultyFont = pygame.font.Font('freesansbold.ttf', 22)
+difficultyFont = pygame.font.Font('freesansbold.ttf', 22)
 
 button = pygame.transform.scale(pygame.image.load("textures/button.png"), (96,48))
 
-easyText = diffcultyFont.render("Easy",True,"black")
-mediumText = diffcultyFont.render("Medium",True,"black")
-hardText = diffcultyFont.render("Hard",True,"black")
+easyText = difficultyFont.render("Easy",True,"black")
+mediumText = difficultyFont.render("Medium",True,"black")
+hardText = difficultyFont.render("Hard",True,"black")
 
 easyRect = button.get_rect()
 mediumRect = button.get_rect()
@@ -169,6 +169,13 @@ timerBackRect.center = timerPos
 timerText = ""
 
 run = False
+
+bestTimeTitlePos = (width - 235,40)
+bestTimePos = (width - 235,70)
+
+bestTimeTitle = difficultyFont.render("Best Time:",True,"black")
+bestTimeTitleRect = bestTimeTitle.get_rect()
+bestTimeTitleRect.center = bestTimeTitlePos
 
 while True:
     for event in pygame.event.get():
@@ -277,13 +284,23 @@ while True:
     screen.blit(timerBackground, timerBackRect)
 
     if run:
-        timerText = diffcultyFont.render(timer.convertTime(timer.getTimer(), 1),True,"green")
+        timerText = difficultyFont.render(timer.convertTime(timer.getTimer(), 1),True,"green")
     else:
-        timerText = diffcultyFont.render("00:00",True,"green")
+        timerText = difficultyFont.render("00:00",True,"green")
     timerTextRect = timerText.get_rect()
     timerTextRect.center = timerPos
 
     screen.blit(timerText, timerTextRect)
+
+    screen.blit(bestTimeTitle,bestTimeTitleRect)
+
+    if highscoreManager.getHighscores()[difficulty] == "-":
+        bestTimeText = difficultyFont.render("-",True,"black")
+    else:
+        bestTimeText = difficultyFont.render(timer.convertTime(float(highscoreManager.getHighscores()[difficulty]),1),True,"black")
+    bestTimeRect = bestTimeText.get_rect()
+    bestTimeRect.center = bestTimePos
+    screen.blit(bestTimeText, bestTimeRect)
 
     for i in range(size):
         for j in range(size):
