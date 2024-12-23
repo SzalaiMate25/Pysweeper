@@ -9,6 +9,7 @@ def addHighscore(difficulty, score):
     if score < highscores[difficulty]:
         highscores[difficulty] = score
 
+    highscoreFile = open("highscores.txt", "w")
     highscoreFile.write("\n".join([str(x) for x in highscores]))
 
 def getHighscores():

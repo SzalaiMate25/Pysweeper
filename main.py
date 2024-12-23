@@ -184,7 +184,7 @@ while True:
 
     if finished:
         pygame.mixer.Sound.play(yay)
-        highscoreManager.addHighscore(difficulty, round(highscoreManager.getTimer(), 2))
+        highscoreManager.addHighscore(difficulty, round(timer.getTimer(), 2))
         timer.stop()
         time.sleep(3)
         run = False
