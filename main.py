@@ -5,9 +5,8 @@ import map
 import time
 from copy import deepcopy as copy
 import os
-
-def convertTime(seconds, returnFormat):
-    return ((int(seconds / 60), int(seconds) % 60), f"{int(seconds / 60)}:{int(seconds) % 60}")[returnFormat]
+import highscoreManager
+import timer
 
 def loadTextures():
     global textures
@@ -57,6 +56,7 @@ def restart(difficulty):
     global rects
     global textures
     global exploded
+    global timerText
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -78,6 +78,8 @@ def restart(difficulty):
         textures[i] = pygame.transform.scale(textures[i],(tileSize,tileSize))
 
     rects = [[pygame.Rect((i * tileSize + offset_x, j * tileSize + offset_y),(tileSize,tileSize)) for j in range(size)] for i in range(size)]
+
+    timerText = ""
     
 os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -135,8 +137,7 @@ exploded = False
 minesLeftFont = pygame.font.Font('freesansbold.ttf', 64)
 diffcultyFont = pygame.font.Font('freesansbold.ttf', 22)
 
-button = pygame.image.load("textures/button.png")
-button = pygame.transform.scale(button, (96,48))
+button = pygame.transform.scale(pygame.image.load("textures/button.png"), (96,48))
 
 easyText = diffcultyFont.render("Easy",True,"black")
 mediumText = diffcultyFont.render("Medium",True,"black")
@@ -159,7 +160,15 @@ hardRect.center = hardPos
 easyTextRect.center = easyPos
 mediumTextRect.center = mediumPos
 hardTextRect.center = hardPos
- 
+
+timerPos = (width - 70,50)
+
+timerBackground = pygame.transform.scale(pygame.image.load("textures/timer.png"), (96,48))
+timerBackRect = timerBackground.get_rect()
+timerBackRect.center = timerPos
+timerText = ""
+
+run = False
 
 while True:
     for event in pygame.event.get():
@@ -175,13 +184,17 @@ while True:
 
     if finished:
         pygame.mixer.Sound.play(yay)
+        highscoreManager.addHighscore(difficulty, round(highscoreManager.getTimer(), 2))
+        timer.stop()
         time.sleep(3)
+        run = False
         print("You win!")
         sys.exit()
 
     if exploded:
         pygame.mixer.Sound.play(boom)
         time.sleep(3)
+        run = False
         print("BOOOM\n")
         restart(difficulty)
 
@@ -210,6 +223,8 @@ while True:
                             else:
                                 firstRevealed = True
                                 mineField.clear((j,i))
+                                timer.startTimer()
+                                run = True
                                 break
 
                     elif mineField.map[j][i].isMine:
@@ -258,6 +273,17 @@ while True:
     screen.blit(mediumText, mediumTextRect)
     screen.blit(button, hardRect)
     screen.blit(hardText, hardTextRect)
+
+    screen.blit(timerBackground, timerBackRect)
+
+    if run:
+        timerText = diffcultyFont.render(timer.convertTime(timer.getTimer(), 1),True,"green")
+    else:
+        timerText = diffcultyFont.render("00:00",True,"green")
+    timerTextRect = timerText.get_rect()
+    timerTextRect.center = timerPos
+
+    screen.blit(timerText, timerTextRect)
 
     for i in range(size):
         for j in range(size):

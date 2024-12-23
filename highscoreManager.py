@@ -13,4 +13,10 @@ def addHighscore(difficulty, score):
 
 def getHighscores():
     highscoreFile = open("highscores.txt")
-    return highscoreFile.read().split("\n")
+    highscores = highscoreFile.read().split("\n")
+
+    for i in range(len(highscores)):
+        if highscores[i] in ("99999","99999.0"):
+            highscores[i] = "-"
+
+    return highscores
