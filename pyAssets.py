@@ -99,10 +99,12 @@ def loadRects():
 
 
 def loadSounds():
-    global yay, boom
+    global soundNames, sounds
 
-    yay = pygame.mixer.Sound("audio/yay.mp3") # https://pixabay.com/sound-effects/search/yay/
-    boom = pygame.mixer.Sound("audio/boom.mp3") # https://pixabay.com/sound-effects/search/explosion/
+    # Source: https://pixabay.com/sound-effects
+
+    soundNames = ["yay","boom"]
+    sounds = [pygame.mixer.Sound("audio/yay.mp3"), pygame.mixer.Sound("audio/boom.mp3")]
 
 # Functions
 
@@ -128,6 +130,9 @@ def init(setWidth, setHeight):
     loadButtonRects()
     loadRects()
     loadSounds()
+
+def playSound(sound):
+    pygame.mixer.Sound.play(sounds[soundNames.index(sound)])
 
 # Draw functions
 

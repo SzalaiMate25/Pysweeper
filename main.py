@@ -102,7 +102,7 @@ while True:
                 finished = False
 
     if finished:
-        pygame.mixer.Sound.play(pyAssets.yay)
+        pyAssets.playSound("yay")
         highscoreManager.addHighscore(difficulty, round(timer.getTimer(), 2))
         timer.stop()
         time.sleep(3)
@@ -111,7 +111,7 @@ while True:
         sys.exit()
 
     if exploded:
-        pygame.mixer.Sound.play(pyAssets.boom)
+        pyAssets.playSound("boom")
         time.sleep(3)
         run = False
         print("BOOOM\n")
