@@ -8,7 +8,7 @@ import highscoreManager
 import timer
 import pyAssets
 
-def explode():
+def explode(coords):
     global exploded
     global mineField
     global size
@@ -21,6 +21,8 @@ def explode():
                 mineField.map[j][i].texture = 11
             elif mineField.map[j][i].texture == 10:
                 mineField.map[j][i].texture = 13
+    
+    mineField.map[coords[0]][coords[1]].texture = 12
 
 def restart(difficulty):
     global sizes
@@ -150,12 +152,11 @@ while True:
                                 break
 
                     elif mineField.map[j][i].isMine:
-                        explode()
-
-                        mineField.map[j][i].texture = 12
+                        explode((j,i))
 
                     elif mineField.map[j][i].texture in (9,10):
                         mineField.clear((j,i))
+
                     else:
                         for k in range(-1,2):
                             for l in range(-1,2):
@@ -163,7 +164,7 @@ while True:
                                     if j + l > -1 and i + k > -1:
                                         if not mineField.map[j + l][i + k].isFlagged:
                                             if mineField.map[j + l][i + k].isMine:
-                                                explode()
+                                                explode((j + l, i + k))
                                             else:
                                                 mineField.clear((j + l, i + k))
                                 except: pass
