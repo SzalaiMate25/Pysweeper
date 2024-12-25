@@ -113,6 +113,7 @@ def init(setWidth, setHeight):
 
     width = setWidth
     height = setHeight
+    print(width, height)
 
     pygame.init()
     pygame.mixer.init()
@@ -184,12 +185,13 @@ def drawMinefield(mineField, size, tileSize, offset_x, offset_y):
         for j in range(size):
             screen.blit(textures[mineField.map[i][j].texture],(j * tileSize + offset_x, i * tileSize + offset_y))
 
-def drawAll(minesLeft, run, timer, bestTime, mineField, size, tileSize, offset_x, offset_y):
+def drawGUI(minesLeft, run, timer, bestTime):
     screen.fill(backgroundColor)
 
     drawMinesLeft(minesLeft)
     drawButtons()
     drawTimer(run, timer)
     drawBestTime(bestTime)
-    drawMinefield(mineField, size, tileSize, offset_x, offset_y)
-    
+
+def drawFinishWindow():
+    pass 

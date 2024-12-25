@@ -178,10 +178,11 @@ while True:
 
     preivousKeyPresses = pygame.mouse.get_pressed()
 
-    pyAssets.drawAll(mineField.minesLeft(), 
+    pyAssets.drawGUI(mineField.minesLeft(), 
                      run, timer.convertTime(timer.getTimer(), 1), 
-                     highscoreManager.getHighscores()[difficulty],
-                     mineField, size, tileSize, offset_x, offset_y)
+                     highscoreManager.getHighscores()[difficulty],)
+    pyAssets.drawMinefield(mineField, size, tileSize, offset_x, offset_y)
+    
 
     pygame.display.flip()
     pyAssets.clock.tick(60)
