@@ -158,11 +158,11 @@ while True:
                             for l in range(-1,2):
                                 try:
                                     if j + l > -1 and i + k > -1:
-                                        if mineField.map[j + l][i + k].isMine:
-                                            if not mineField.map[j + l][i + k].isFlagged:
+                                        if not mineField.map[j + l][i + k].isFlagged:
+                                            if mineField.map[j + l][i + k].isMine:
                                                 explode()
-                                        else:
-                                            mineField.clear((j + l, i + k))
+                                            else:
+                                                mineField.clear((j + l, i + k))
                                 except: pass
 
     if mouseKeyPresses[0] and not preivousKeyPresses[0]:
@@ -182,7 +182,7 @@ while True:
                      run, timer.convertTime(timer.getTimer(), 1), 
                      highscoreManager.getHighscores()[difficulty],)
     pyAssets.drawMinefield(mineField, size, tileSize, offset_x, offset_y)
-    
+
 
     pygame.display.flip()
     pyAssets.clock.tick(60)
