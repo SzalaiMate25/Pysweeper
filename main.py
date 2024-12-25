@@ -36,6 +36,7 @@ def restart(difficulty):
     global rects
     global exploded
     global timerText
+    global run
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -54,6 +55,8 @@ def restart(difficulty):
     pyAssets.loadTextures(tileSize, offset_x, offset_y, size)
 
     timerText = ""
+
+    run = False
     
 os.system('cls' if os.name == 'nt' else 'clear')
 
