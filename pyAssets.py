@@ -109,7 +109,7 @@ def loadSounds():
 # Functions
 
 def init(setWidth, setHeight):
-    global screen, clock, width, Height
+    global screen, clock, width, height
 
     width = setWidth
     height = setHeight
