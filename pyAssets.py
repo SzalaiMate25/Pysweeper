@@ -2,7 +2,7 @@ import pygame
 import timer
 
 def loadTextures(tileSize, offset_x, offset_y, size):
-    global textures, rects, backgroundColor, button, timerBackground
+    global textures, rects, backgroundColor, button, timerBackground, finishWindow
 
     textures = [
         pygame.image.load("textures/cell0.png"),
@@ -29,6 +29,8 @@ def loadTextures(tileSize, offset_x, offset_y, size):
     button = pygame.transform.scale(pygame.image.load("textures/button.png"), (96,48))
     timerBackground = pygame.transform.scale(pygame.image.load("textures/timer.png"), (96,48))
 
+    finishWindow = pygame.image.load("textures/finishwindow.png")
+
 # Misc
 def loadMisc():
     global backgroundColor
@@ -37,26 +39,46 @@ def loadMisc():
 
 # Fonts
 def loadFonts():
-    global minesLeftFont, GUIfont
+    global minesLeftFont, GUIfont, titleFont, smallTitleFont, largeTitleFont, difficultyFont
 
     minesLeftFont = pygame.font.Font('freesansbold.ttf', 64)
     GUIfont = pygame.font.Font('freesansbold.ttf', 22)
+    titleFont = pygame.font.Font('freesansbold.ttf', 42)
+    smallTitleFont = pygame.font.Font('freesansbold.ttf', 32)
+    largeTitleFont = pygame.font.Font('freesansbold.ttf', 72)
+    difficultyFont = pygame.font.Font('freesansbold.ttf', 52)
 
 # Texts
 def loadTexts():
-    global easyText, mediumText, hardText, bestTimeTitle
+    global easyText, mediumText, hardText, bestTimeTitle, congratulationsText, youWinText, difficultyTitleText, difficultyTexts, yourTimeTitle, windowBestTimeTitle
 
     easyText = GUIfont.render("Easy",True,"black")
     mediumText = GUIfont.render("Medium",True,"black")
     hardText = GUIfont.render("Hard",True,"black")
     bestTimeTitle = GUIfont.render("Best Time:",True,"black")
 
+    # Finish window
+
+    congratulationsText = titleFont.render("CONGRATULATIONS!",True,"black")
+    youWinText = smallTitleFont.render("You Win!",True,"black")
+
+    difficultyTitleText = titleFont.render("Difficulty:",True,"black")
+    difficultyTexts = [
+        difficultyFont.render("Easy",True,"black"),
+        difficultyFont.render("Medium",True,"black"),
+        difficultyFont.render("Hard",True,"black")
+    ]
+
+    yourTimeTitle = titleFont.render("Your Time:",True,"black")
+    windowBestTimeTitle = smallTitleFont.render("Best Time:",True,"black")
+
 # GUI rects
 
 # Positions
 
 def loadPos(width):
-    global easyPos, mediumPos, hardPos, timerPos, bestTimeTitlePos, bestTimePos
+    global easyPos, mediumPos, hardPos, timerPos
+    global bestTimeTitlePos, bestTimePos, congratulationsPos, youWinPos, difficultyTitlePos, difficultyPos, yourTimeTitlePos, yourTimePos, windowBestTimeTitlePos, windowBestTimePos
 
     easyPos = (70,50)
     mediumPos = (176,50)
@@ -66,6 +88,18 @@ def loadPos(width):
 
     bestTimeTitlePos = (width - 235,40)
     bestTimePos = (width - 235,70)
+
+    congratulationsPos = (width / 2, 150)
+    youWinPos = (width / 2, 200)
+
+    difficultyTitlePos = (width / 2, 275)
+    difficultyPos = (width / 2, 325)
+
+    yourTimeTitlePos = (width / 2, 390)
+    yourTimePos = (width / 2, 440)
+
+    windowBestTimeTitlePos = (width / 2, 505)
+    windowBestTimePos = (width / 2, 555)
 
 def loadButtonRects():
     global easyRect, mediumRect, hardRect, easyTextRect, mediumTextRect, hardTextRect
@@ -87,16 +121,38 @@ def loadButtonRects():
     hardTextRect.center = hardPos
 
 def loadRects():
-    global timerBackRect, bestTimeTitleRect
+    global timerBackRect, bestTimeTitleRect, congratulationsRect, youWinRect, difficultyTitleRect, yourTimeTitleRect, difficultyRects, windowBestTimeTitleRect
 
     # Timer
+
     timerBackRect = timerBackground.get_rect()
     timerBackRect.center = timerPos
 
     # Best Time
+
     bestTimeTitleRect = bestTimeTitle.get_rect()
     bestTimeTitleRect.center = bestTimeTitlePos
 
+    # Finish window
+
+    congratulationsRect = congratulationsText.get_rect()
+    youWinRect = youWinText.get_rect()
+    difficultyTitleRect = difficultyTitleText.get_rect()
+    yourTimeTitleRect = yourTimeTitle.get_rect()
+
+    difficultyRects = [text.get_rect() for text in difficultyTexts]
+
+    windowBestTimeTitleRect = windowBestTimeTitle.get_rect()
+
+    congratulationsRect.center = congratulationsPos
+    youWinRect.center = youWinPos
+    difficultyTitleRect.center = difficultyTitlePos
+    yourTimeTitleRect.center = yourTimeTitlePos
+
+    for i in range(3):
+        difficultyRects[i].center = difficultyPos
+
+    windowBestTimeTitleRect.center = windowBestTimeTitlePos
 
 def loadSounds():
     global soundNames, sounds
@@ -113,7 +169,6 @@ def init(setWidth, setHeight):
 
     width = setWidth
     height = setHeight
-    print(width, height)
 
     pygame.init()
     pygame.mixer.init()
@@ -193,5 +248,32 @@ def drawGUI(minesLeft, run, timer, bestTime):
     drawTimer(run, timer)
     drawBestTime(bestTime)
 
-def drawFinishWindow():
-    pass 
+def drawFinishWindow(difficulty, currentTime, bestTime):
+
+    currentTimeText = largeTitleFont.render(timer.convertTime(currentTime, 1),True,"black")
+
+    currentTimeRect = currentTimeText.get_rect()
+    currentTimeRect.center = yourTimePos
+
+    if bestTime == "-":
+        bestTimeText = titleFont.render("-",True,"black")
+    else:
+        bestTimeText = titleFont.render(timer.convertTime(float(bestTime), 1),True,"black")
+
+    bestTimeRect = bestTimeText.get_rect()
+    bestTimeRect.center = windowBestTimePos
+
+
+    screen.blit(finishWindow, (100, 100))
+
+    screen.blit(congratulationsText, congratulationsRect)
+    screen.blit(youWinText, youWinRect)
+
+    screen.blit(difficultyTitleText, difficultyTitleRect)
+    screen.blit(difficultyTexts[difficulty], difficultyRects[difficulty])
+
+    screen.blit(yourTimeTitle, yourTimeTitleRect)
+    screen.blit(currentTimeText, currentTimeRect)
+
+    screen.blit(windowBestTimeTitle, windowBestTimeTitleRect)
+    screen.blit(bestTimeText, bestTimeRect)

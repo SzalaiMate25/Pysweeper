@@ -25,20 +25,7 @@ def explode(coords):
     mineField.map[coords[0]][coords[1]].texture = 12
 
 def restart(difficulty):
-    global sizes
-    global size
-    global tileSizes
-    global tileSize
-    global mines
-    global width
-    global height
-    global mineField
-    global firstRevealed
-    global screen
-    global rects
-    global exploded
-    global timerText
-    global run
+    global sizes, size, tileSizes, tileSize, mines, width, height, mineField, firstRevealed, screen, rects, exploded, timerText, run, drawFinishWindow
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -59,6 +46,7 @@ def restart(difficulty):
     timerText = ""
 
     run = False
+    drawFinishWindow = False
     
 os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -93,13 +81,14 @@ firstRevealed = False
 exploded = False
 
 run = False
+drawFinishWindow = True
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
     
-    finished = True
+    finished = copy(run)
 
     for row in mineField.map:
         for cell in row:
@@ -113,7 +102,7 @@ while True:
         time.sleep(3)
         run = False
         print("You win!")
-        sys.exit()
+        drawFinishWindow = True
 
     if exploded:
         pyAssets.playSound("boom")
@@ -186,6 +175,9 @@ while True:
                      run, timer.convertTime(timer.getTimer(), 1), 
                      highscoreManager.getHighscores()[difficulty],)
     pyAssets.drawMinefield(mineField, size, tileSize, offset_x, offset_y)
+
+    if drawFinishWindow:
+        pyAssets.drawFinishWindow(difficulty, timer.getTimer(), highscoreManager.getHighscores()[difficulty])
 
 
     pygame.display.flip()
