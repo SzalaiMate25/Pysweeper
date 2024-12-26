@@ -102,14 +102,14 @@ def loadPos(width):
     congratulationsPos = (width / 2, 150)
     youWinPos = (width / 2, 200)
 
-    difficultyTitlePos = (width / 2, 275)
-    difficultyPos = (width / 2, 325)
+    difficultyTitlePos = (width / 2, 300)
+    difficultyPos = (width / 2, 350)
 
-    yourTimeTitlePos = (width / 2, 390)
-    yourTimePos = (width / 2, 440)
+    yourTimeTitlePos = (width / 2, 415)
+    yourTimePos = (width / 2, 465)
 
-    windowBestTimeTitlePos = (width / 2, 505)
-    windowBestTimePos = (width / 2, 555)
+    windowBestTimeTitlePos = (width / 2, 530)
+    windowBestTimePos = (width / 2, 580)
 
     closeButtonPos = (668,100)
 

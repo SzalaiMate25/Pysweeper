@@ -83,7 +83,7 @@ firstRevealed = False
 exploded = False
 
 run = False
-drawFinishWindow = True
+drawFinishWindow = False
 
 resettable = True
 
