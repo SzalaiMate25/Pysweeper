@@ -177,7 +177,12 @@ while True:
     pyAssets.drawMinefield(mineField, size, tileSize, offset_x, offset_y)
 
     if drawFinishWindow:
-        pyAssets.drawFinishWindow(difficulty, timer.getTimer(), highscoreManager.getHighscores()[difficulty])
+
+        match pyAssets.drawFinishWindow(difficulty, timer.getTimer(), highscoreManager.getHighscores()[difficulty]):
+            case 0:
+                pass
+            case 1:
+                drawFinishWindow = False
 
 
     pygame.display.flip()

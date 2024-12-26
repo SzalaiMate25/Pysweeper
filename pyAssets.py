@@ -1,8 +1,9 @@
 import pygame
 import timer
+import sys
 
 def loadTextures(tileSize, offset_x, offset_y, size):
-    global textures, rects, backgroundColor, button, timerBackground, finishWindow
+    global textures, rects, backgroundColor, button, timerBackground, finishWindow, closeButton, largeButton
 
     textures = [
         pygame.image.load("textures/cell0.png"),
@@ -30,6 +31,8 @@ def loadTextures(tileSize, offset_x, offset_y, size):
     timerBackground = pygame.transform.scale(pygame.image.load("textures/timer.png"), (96,48))
 
     finishWindow = pygame.image.load("textures/finishwindow.png")
+    closeButton = pygame.image.load("textures/closebutton.png")
+    largeButton = pygame.image.load("textures/largebutton.png")
 
 # Misc
 def loadMisc():
@@ -51,6 +54,7 @@ def loadFonts():
 # Texts
 def loadTexts():
     global easyText, mediumText, hardText, bestTimeTitle, congratulationsText, youWinText, difficultyTitleText, difficultyTexts, yourTimeTitle, windowBestTimeTitle
+    global playAgainText, quitText, resetText
 
     easyText = GUIfont.render("Easy",True,"black")
     mediumText = GUIfont.render("Medium",True,"black")
@@ -72,6 +76,10 @@ def loadTexts():
     yourTimeTitle = titleFont.render("Your Time:",True,"black")
     windowBestTimeTitle = smallTitleFont.render("Best Time:",True,"black")
 
+    playAgainText = GUIfont.render("Play Again",True,"black")
+    quitText = GUIfont.render("Quit",True,"black")
+    resetText = GUIfont.render("Reset Highscores",True,"black")
+
 # GUI rects
 
 # Positions
@@ -79,6 +87,7 @@ def loadTexts():
 def loadPos(width):
     global easyPos, mediumPos, hardPos, timerPos
     global bestTimeTitlePos, bestTimePos, congratulationsPos, youWinPos, difficultyTitlePos, difficultyPos, yourTimeTitlePos, yourTimePos, windowBestTimeTitlePos, windowBestTimePos
+    global closeButtonPos, playAgainPos, quitPos, resetPos
 
     easyPos = (70,50)
     mediumPos = (176,50)
@@ -101,8 +110,15 @@ def loadPos(width):
     windowBestTimeTitlePos = (width / 2, 505)
     windowBestTimePos = (width / 2, 555)
 
+    closeButtonPos = (668,100)
+
+    playAgainPos = (width / 2, 700)
+    quitPos = (width / 2 - 178, 700)
+    resetPos = (width / 2 + 178, 700)
+
 def loadButtonRects():
     global easyRect, mediumRect, hardRect, easyTextRect, mediumTextRect, hardTextRect
+    global closeButtonRect, playAgainButtonRect, quitButtonRect, resetButtonRect, playAgainTextRect, quitTextRect, resetTextRect
 
     easyRect = button.get_rect()
     mediumRect = button.get_rect()
@@ -119,6 +135,26 @@ def loadButtonRects():
     easyTextRect.center = easyPos
     mediumTextRect.center = mediumPos
     hardTextRect.center = hardPos
+
+    closeButtonRect = closeButton.get_rect()
+
+    playAgainButtonRect = largeButton.get_rect()
+    quitButtonRect = largeButton.get_rect()
+    resetButtonRect = largeButton.get_rect()
+
+    closeButtonRect.center = closeButtonPos
+
+    playAgainButtonRect.center = playAgainPos
+    quitButtonRect.center = quitPos
+    resetButtonRect.center = resetPos
+
+    playAgainTextRect = playAgainText.get_rect()
+    quitTextRect = quitText.get_rect()
+    resetTextRect = resetText.get_rect()
+
+    playAgainTextRect.center = playAgainPos
+    quitTextRect.center = quitPos
+    resetTextRect.center = resetPos
 
 def loadRects():
     global timerBackRect, bestTimeTitleRect, congratulationsRect, youWinRect, difficultyTitleRect, yourTimeTitleRect, difficultyRects, windowBestTimeTitleRect
@@ -277,3 +313,21 @@ def drawFinishWindow(difficulty, currentTime, bestTime):
 
     screen.blit(windowBestTimeTitle, windowBestTimeTitleRect)
     screen.blit(bestTimeText, bestTimeRect)
+
+    screen.blit(closeButton, closeButtonRect)
+
+    screen.blit(largeButton, playAgainButtonRect)
+    screen.blit(largeButton, quitButtonRect)
+    screen.blit(largeButton, resetButtonRect)
+
+    screen.blit(playAgainText, playAgainTextRect)
+    screen.blit(quitText, quitTextRect)
+    screen.blit(resetText, resetTextRect)
+
+    mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
+    mousePos = pygame.mouse.get_pos()
+
+    if mouseKeyPresses[0]:
+        if closeButtonRect.collidepoint(mousePos):
+            return 1
+    return 0
