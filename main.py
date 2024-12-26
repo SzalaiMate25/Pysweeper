@@ -25,7 +25,7 @@ def explode(coords):
     mineField.map[coords[0]][coords[1]].texture = 12
 
 def restart(difficulty):
-    global sizes, size, tileSizes, tileSize, mines, width, height, mineField, firstRevealed, screen, rects, exploded, timerText, run, drawFinishWindow
+    global sizes, size, tileSizes, tileSize, mines, width, height, mineField, firstRevealed, screen, rects, exploded, timerText, run, drawFinishWindow, resettable
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -47,6 +47,8 @@ def restart(difficulty):
 
     run = False
     drawFinishWindow = False
+
+    resettable = True
     
 os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -82,6 +84,8 @@ exploded = False
 
 run = False
 drawFinishWindow = True
+
+resettable = True
 
 while True:
     for event in pygame.event.get():
@@ -141,7 +145,8 @@ while True:
                                 break
 
                     elif mineField.map[j][i].isMine:
-                        explode((j,i))
+                        if not mineField.map[j][i].isFlagged:
+                            explode((j,i))
 
                     elif mineField.map[j][i].texture in (9,10):
                         mineField.clear((j,i))
@@ -183,6 +188,16 @@ while True:
                 pass
             case 1:
                 drawFinishWindow = False
+            case 2:
+                drawFinishWindow = False
+                restart(difficulty)
+            case 3:
+                sys.exit()
+            case 4:
+                if resettable:
+                    resettable = False
+                    highscoreManager.resetHighscores()
+                    print("\nReset highscores")
 
 
     pygame.display.flip()

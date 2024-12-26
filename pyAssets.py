@@ -54,7 +54,7 @@ def loadFonts():
 # Texts
 def loadTexts():
     global easyText, mediumText, hardText, bestTimeTitle, congratulationsText, youWinText, difficultyTitleText, difficultyTexts, yourTimeTitle, windowBestTimeTitle
-    global playAgainText, quitText, resetText
+    global playAgainText, quitText, resetText, highscoreText
 
     easyText = GUIfont.render("Easy",True,"black")
     mediumText = GUIfont.render("Medium",True,"black")
@@ -78,7 +78,8 @@ def loadTexts():
 
     playAgainText = GUIfont.render("Play Again",True,"black")
     quitText = GUIfont.render("Quit",True,"black")
-    resetText = GUIfont.render("Reset Highscores",True,"black")
+    resetText = GUIfont.render("Reset",True,"black")
+    highscoreText = GUIfont.render("Highscores",True,"black")
 
 # GUI rects
 
@@ -87,7 +88,7 @@ def loadTexts():
 def loadPos(width):
     global easyPos, mediumPos, hardPos, timerPos
     global bestTimeTitlePos, bestTimePos, congratulationsPos, youWinPos, difficultyTitlePos, difficultyPos, yourTimeTitlePos, yourTimePos, windowBestTimeTitlePos, windowBestTimePos
-    global closeButtonPos, playAgainPos, quitPos, resetPos
+    global closeButtonPos, playAgainPos, quitPos, resetPos, highscorePos, resetMiddlePos
 
     easyPos = (70,50)
     mediumPos = (176,50)
@@ -114,11 +115,13 @@ def loadPos(width):
 
     playAgainPos = (width / 2, 700)
     quitPos = (width / 2 - 178, 700)
-    resetPos = (width / 2 + 178, 700)
+    resetPos = (width / 2 + 178, 685)
+    resetMiddlePos = (width / 2 + 178, 700)
+    highscorePos =  (width / 2 + 178, 715)
 
 def loadButtonRects():
     global easyRect, mediumRect, hardRect, easyTextRect, mediumTextRect, hardTextRect
-    global closeButtonRect, playAgainButtonRect, quitButtonRect, resetButtonRect, playAgainTextRect, quitTextRect, resetTextRect
+    global closeButtonRect, playAgainButtonRect, quitButtonRect, resetButtonRect, playAgainTextRect, quitTextRect, resetTextRect, highscoreTextRect
 
     easyRect = button.get_rect()
     mediumRect = button.get_rect()
@@ -146,15 +149,17 @@ def loadButtonRects():
 
     playAgainButtonRect.center = playAgainPos
     quitButtonRect.center = quitPos
-    resetButtonRect.center = resetPos
+    resetButtonRect.center = resetMiddlePos
 
     playAgainTextRect = playAgainText.get_rect()
     quitTextRect = quitText.get_rect()
     resetTextRect = resetText.get_rect()
+    highscoreTextRect = highscoreText.get_rect()
 
     playAgainTextRect.center = playAgainPos
     quitTextRect.center = quitPos
     resetTextRect.center = resetPos
+    highscoreTextRect.center = highscorePos
 
 def loadRects():
     global timerBackRect, bestTimeTitleRect, congratulationsRect, youWinRect, difficultyTitleRect, yourTimeTitleRect, difficultyRects, windowBestTimeTitleRect
@@ -323,6 +328,7 @@ def drawFinishWindow(difficulty, currentTime, bestTime):
     screen.blit(playAgainText, playAgainTextRect)
     screen.blit(quitText, quitTextRect)
     screen.blit(resetText, resetTextRect)
+    screen.blit(highscoreText, highscoreTextRect)
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
     mousePos = pygame.mouse.get_pos()
@@ -330,4 +336,10 @@ def drawFinishWindow(difficulty, currentTime, bestTime):
     if mouseKeyPresses[0]:
         if closeButtonRect.collidepoint(mousePos):
             return 1
+        elif playAgainButtonRect.collidepoint(mousePos):
+            return 2
+        elif quitButtonRect.collidepoint(mousePos):
+            return 3
+        elif resetButtonRect.collidepoint(mousePos):
+            return 4
     return 0
