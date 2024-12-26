@@ -1,9 +1,8 @@
 import pygame
 import timer
-import sys
 
 def loadTextures(tileSize, offset_x, offset_y, size):
-    global textures, rects, backgroundColor, button, timerBackground, finishWindow, closeButton, largeButton
+    global textures, rects, backgroundColor, button, timerBackground, finishWindow, closeButton, largeButton, newBest
 
     textures = [
         pygame.image.load("textures/cell0.png"),
@@ -33,6 +32,7 @@ def loadTextures(tileSize, offset_x, offset_y, size):
     finishWindow = pygame.image.load("textures/finishwindow.png")
     closeButton = pygame.image.load("textures/closebutton.png")
     largeButton = pygame.image.load("textures/largebutton.png")
+    newBest = pygame.transform.scale(pygame.image.load("textures/newbest.png"), (128,128))
 
 # Misc
 def loadMisc():
@@ -88,7 +88,7 @@ def loadTexts():
 def loadPos(width):
     global easyPos, mediumPos, hardPos, timerPos
     global bestTimeTitlePos, bestTimePos, congratulationsPos, youWinPos, difficultyTitlePos, difficultyPos, yourTimeTitlePos, yourTimePos, windowBestTimeTitlePos, windowBestTimePos
-    global closeButtonPos, playAgainPos, quitPos, resetPos, highscorePos, resetMiddlePos
+    global closeButtonPos, playAgainPos, quitPos, resetPos, highscorePos, resetMiddlePos, newBestPos
 
     easyPos = (70,50)
     mediumPos = (176,50)
@@ -118,6 +118,7 @@ def loadPos(width):
     resetPos = (width / 2 + 178, 685)
     resetMiddlePos = (width / 2 + 178, 700)
     highscorePos =  (width / 2 + 178, 715)
+    newBestPos = (width / 2 + 160, 465)
 
 def loadButtonRects():
     global easyRect, mediumRect, hardRect, easyTextRect, mediumTextRect, hardTextRect
@@ -162,7 +163,8 @@ def loadButtonRects():
     highscoreTextRect.center = highscorePos
 
 def loadRects():
-    global timerBackRect, bestTimeTitleRect, congratulationsRect, youWinRect, difficultyTitleRect, yourTimeTitleRect, difficultyRects, windowBestTimeTitleRect
+    global timerBackRect, bestTimeTitleRect
+    global congratulationsRect, youWinRect, difficultyTitleRect, yourTimeTitleRect, difficultyRects, windowBestTimeTitleRect, newBestRect
 
     # Timer
 
@@ -194,6 +196,10 @@ def loadRects():
         difficultyRects[i].center = difficultyPos
 
     windowBestTimeTitleRect.center = windowBestTimeTitlePos
+
+    newBestRect = newBest.get_rect()
+
+    newBestRect.center = newBestPos
 
 def loadSounds():
     global soundNames, sounds
@@ -289,7 +295,7 @@ def drawGUI(minesLeft, run, timer, bestTime):
     drawTimer(run, timer)
     drawBestTime(bestTime)
 
-def drawFinishWindow(difficulty, currentTime, bestTime):
+def drawFinishWindow(difficulty, currentTime, bestTime, newHighscore):
 
     currentTimeText = largeTitleFont.render(timer.convertTime(currentTime, 1),True,"black")
 
@@ -329,6 +335,9 @@ def drawFinishWindow(difficulty, currentTime, bestTime):
     screen.blit(quitText, quitTextRect)
     screen.blit(resetText, resetTextRect)
     screen.blit(highscoreText, highscoreTextRect)
+
+    if newHighscore:
+        screen.blit(newBest, newBestRect)
 
     mouseKeyPresses = pygame.mouse.get_pressed() # (left, middle, right)
     mousePos = pygame.mouse.get_pos()

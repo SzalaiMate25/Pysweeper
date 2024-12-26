@@ -25,7 +25,8 @@ def explode(coords):
     mineField.map[coords[0]][coords[1]].texture = 12
 
 def restart(difficulty):
-    global sizes, size, tileSizes, tileSize, mines, width, height, mineField, firstRevealed, screen, rects, exploded, timerText, run, drawFinishWindow, resettable
+    global sizes, size, tileSizes, tileSize, mines, width, height, mineField, firstRevealed, screen, rects, exploded, timerText, run
+    global drawFinishWindow, resettable, newHighscore
 
     size = sizes[difficulty]
     tileSize = tileSizes[difficulty]
@@ -49,6 +50,7 @@ def restart(difficulty):
     drawFinishWindow = False
 
     resettable = True
+    newHighscore = False
     
 os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -86,6 +88,7 @@ run = False
 drawFinishWindow = False
 
 resettable = True
+newHighscore = False
 
 while True:
     for event in pygame.event.get():
@@ -101,7 +104,7 @@ while True:
 
     if finished:
         pyAssets.playSound("yay")
-        highscoreManager.addHighscore(difficulty, round(timer.getTimer(), 2))
+        newHighscore = highscoreManager.addHighscore(difficulty, round(timer.getTimer(), 2))
         timer.stop()
         time.sleep(3)
         run = False
@@ -131,37 +134,37 @@ while True:
                         mineField.map[j][i].isFlagged = True
 
                 elif mouseKeyPresses[0] and not preivousKeyPresses[0]:
-                    if not firstRevealed:
-                        while True:
-                            if mineField.getAdjacent((j,i)) != 0:
-                                mineField = map.map(size)
-                                mineField.placeMines(mines)
+                    if not mineField.map[j][i].isFlagged:
+                        if not firstRevealed:
+                            while True:
+                                if mineField.getAdjacent((j,i)) != 0:
+                                    mineField = map.map(size)
+                                    mineField.placeMines(mines)
 
-                            else:
-                                firstRevealed = True
-                                mineField.clear((j,i))
-                                timer.startTimer()
-                                run = True
-                                break
+                                else:
+                                    firstRevealed = True
+                                    mineField.clear((j,i))
+                                    timer.startTimer()
+                                    run = True
+                                    break
 
-                    elif mineField.map[j][i].isMine:
-                        if not mineField.map[j][i].isFlagged:
+                        elif mineField.map[j][i].isMine:
                             explode((j,i))
 
-                    elif mineField.map[j][i].texture in (9,10):
-                        mineField.clear((j,i))
+                        elif mineField.map[j][i].texture in (9,10):
+                            mineField.clear((j,i))
 
-                    else:
-                        for k in range(-1,2):
-                            for l in range(-1,2):
-                                try:
-                                    if j + l > -1 and i + k > -1:
-                                        if not mineField.map[j + l][i + k].isFlagged:
-                                            if mineField.map[j + l][i + k].isMine:
-                                                explode((j + l, i + k))
-                                            else:
-                                                mineField.clear((j + l, i + k))
-                                except: pass
+                        else:
+                            for k in range(-1,2):
+                                for l in range(-1,2):
+                                    try:
+                                        if j + l > -1 and i + k > -1:
+                                            if not mineField.map[j + l][i + k].isFlagged:
+                                                if mineField.map[j + l][i + k].isMine:
+                                                    explode((j + l, i + k))
+                                                else:
+                                                    mineField.clear((j + l, i + k))
+                                    except: pass
 
     if mouseKeyPresses[0] and not preivousKeyPresses[0]:
         if pyAssets.easyRect.collidepoint(mousePos):
@@ -183,7 +186,7 @@ while True:
 
     if drawFinishWindow:
 
-        match pyAssets.drawFinishWindow(difficulty, timer.getTimer(), highscoreManager.getHighscores()[difficulty]):
+        match pyAssets.drawFinishWindow(difficulty, timer.getTimer(), highscoreManager.getHighscores()[difficulty], newHighscore):
             case 0:
                 pass
             case 1:
